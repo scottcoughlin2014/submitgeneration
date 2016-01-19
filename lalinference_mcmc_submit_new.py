@@ -331,16 +331,16 @@ elif args.inj and args.event is not None:
     # Determine if fixed parameters have been asked for
     fixargs = ''
     if args.rightAscension:
-	    RA =
+	    RA = event.longitude
 	    fixargs = fixargs + '  --fix-rightascension --rightascension {} '.format(RA)
     if args.declination:
-            DEC =
+            DEC = event.latitude
             fixargs = fixargs + '  --fix-declination --declination {} '.format(DEC)
     if args.distance:
-            Dist =
+            Dist = event.distance
             fixDistarg = fixargs + '  --fix-distance --distance {} '.format(Dist)
     if args.costheta_jn:
-            theta_jn =
+            theta_jn = 'test'
             fixtheta_jnarg = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(theta_jn)
 
 
