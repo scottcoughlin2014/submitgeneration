@@ -344,8 +344,10 @@ elif args.inj and args.event is not None:
 	    print('to get costheta_jn we must do a special command: {}'.format(commandline))
     	    proc = subprocess.Popen(shlex.split(commandline), stdout=subprocess.PIPE)
     	    output = proc.stdout.read()
-	    output.split('costheta_jn')
-            theta_jn = 
+	    costheta_jn = output.split('costheta_jn')[1]
+	    print(costheta_jn)
+            theta_jn = costheta_jn.split(':')[1]
+	 
             fixargs = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(theta_jn)
 
 
