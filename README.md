@@ -23,8 +23,9 @@ usage: lalinference_mcmc_submit_new.py [-h] [--alloc ALLOC] [--queue QUEUE]
                                        [--no-malmquist] [--no-margtimephi]
                                        [--trigSNR TRIGSNR] [--tempMin TEMPMIN]
                                        [--tempMax TEMPMAX] [--Neff NEFF]
-                                       [--Niter NITER]
-                                       [--fix-rightascension RIGHTASCENSION]
+                                       [--Niter NITER] [--fix-rightascension]
+                                       [--fix-declination] [--fix-distance]
+                                       [--fix-costheta_jn]
 
 Generate a submit file for lalinference_mcmc on grail.
 
@@ -116,8 +117,10 @@ lalinference_mcmc:
                         if injecting, or trigSNR is given.
   --Neff NEFF           Requested number of independent samples.
   --Niter NITER         Maximum number of MCMC iterations to allow.
-  --fix-rightascension RIGHTASCENSION
-                        Fix RA
+  --fix-rightascension  Fix RA
+  --fix-declination     Fix DEC
+  --fix-distance        Fix Distance
+  --fix-costheta_jn     Fix costheta_jn
 
 Help from LAL_MCMC
 
