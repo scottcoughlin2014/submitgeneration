@@ -149,13 +149,13 @@ li_mcmc.add_argument('--Neff', default=1000, type=int,
         help='Requested number of independent samples.')
 li_mcmc.add_argument('--Niter', default=1000000000, type=int,
         help='Maximum number of MCMC iterations to allow.')
-li_mcmc.add_argument('--fix-rightascension', dest=rightAscension,default=False, action='store_true',
+li_mcmc.add_argument('--fix-rightascension', default=False, action='store_true',
 	help='Fix RA')
-li_mcmc.add_argument('--fix-declination', dest=declination,default=False, action='store_true',
+li_mcmc.add_argument('--fix-declination', default=False, action='store_true',
         help='Fix DEC')
-li_mcmc.add_argument('--fix-distance', dest=distance,default=False, action='store_true',
+li_mcmc.add_argument('--fix-distance', default=False, action='store_true',
         help='Fix Distance')
-li_mcmc.add_argument('--fix-costheta_jn', dest=costheta_jn,default=False, action='store_true',
+li_mcmc.add_argument('--fix-costheta_jn', default=False, action='store_true',
         help='Fix costheta_jn')
 
 
@@ -330,18 +330,18 @@ elif args.inj and args.event is not None:
     
     # Determine if fixed parameters have been asked for
     fixargs = ''
-    if args.rightAscension:
+    if args.fix_rightascension:
 	    RA = event.longitude
 	    fixargs = fixargs + '  --fix-rightascension --rightascension {} '.format(RA)
-    if args.declination:
+    if args.fix_declination:
             DEC = event.latitude
             fixargs = fixargs + '  --fix-declination --declination {} '.format(DEC)
-    if args.distance:
+    if args.fix_distance:
             Dist = event.distance
-            fixDistarg = fixargs + '  --fix-distance --distance {} '.format(Dist)
-    if args.costheta_jn:
+            fixargs = fixargs + '  --fix-distance --distance {} '.format(Dist)
+    if args.fix_costheta_jn:
             theta_jn = 'test'
-            fixtheta_jnarg = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(theta_jn)
+            fixargs = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(theta_jn)
 
 
 
@@ -571,7 +571,7 @@ with open(submitFilePath,'w') as outfile:
     outfile.write('  --distance-max {}\\\n'.format(distance_max))
     outfile.write('  --neff {}\\\n'.format(args.Neff))
     if fixargs is not '':
-        outfile.write('  {}\\\n').format(fixargs))
+        outfile.write('  {}\\\n'.format(fixargs))
     outfile.write('  {}'.format('\\\n  '.join(li_args)))
 
 # Make executable if not on quest
