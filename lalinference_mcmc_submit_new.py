@@ -347,6 +347,7 @@ elif args.inj and args.event is not None:
 	    costheta_jn = output.split('costheta_jn')[1]
             costheta_jn = costheta_jn.split(':')[1]
 	    costheta_jn = costheta_jn.split('injected')[0]
+	    costheta_jn = costheta_jn.split('\n')[0]
             fixargs = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(costheta_jn)
 
 
