@@ -578,7 +578,7 @@ with open(submitFilePath,'w') as outfile:
     outfile.write('  --distance-max {}\\\n'.format(distance_max))
     outfile.write('  --neff {}\\\n'.format(args.Neff))
     if fixargs is not '':
-        outfile.write('  {}\\\n'.format(fixargs))
+        outfile.write('{}\\\n'.format(fixargs))
     outfile.write('  {}'.format('\\\n  '.join(li_args)))
 
 # Make executable if not on quest
