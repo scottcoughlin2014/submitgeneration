@@ -149,16 +149,17 @@ li_mcmc.add_argument('--Neff', default=1000, type=int,
         help='Requested number of independent samples.')
 li_mcmc.add_argument('--Niter', default=1000000000, type=int,
         help='Maximum number of MCMC iterations to allow.')
-li_mcmc.add_argument('--fix-rightascension', dest='rightAscension', default=None, type=float,
+li_mcmc.add_argument('--fix-rightascension', dest=rightAscension,default=False, action='store_true',
 	help='Fix RA')
+li_mcmc.add_argument('--fix-declination', dest=declination,default=False, action='store_true',
+        help='Fix DEC')
+li_mcmc.add_argument('--fix-distance', dest=distance,default=False, action='store_true',
+        help='Fix Distance')
+li_mcmc.add_argument('--fix-costheta_jn', dest=costheta_jn,default=False, action='store_true',
+        help='Fix costheta_jn')
 
 
 args,unknown = parser.parse_known_args()
-
-
-if args.rightAscension is not None:
-	print('hello1')
-	rightAscension = args.rightAscension
 
 
 # Assume all unknown arguments are meant for lalinference_mcmc
@@ -326,6 +327,23 @@ elif args.inj and args.event is not None:
     trigtime_as_string = str(trigtime)
     simidtmp = str(event.simulation_id)
     simid = simidtmp.split(':')[2]
+    
+    # Determine if fixed parameters have been asked for
+    fixargs = ''
+    if args.rightAscension:
+	    RA =
+	    fixargs = fixargs + '  --fix-rightascension --rightascension {} '.format(RA)
+    if args.declination:
+            DEC =
+            fixargs = fixargs + '  --fix-declination --declination {} '.format(DEC)
+    if args.distance:
+            Dist =
+            fixDistarg = fixargs + '  --fix-distance --distance {} '.format(Dist)
+    if args.costheta_jn:
+            theta_jn =
+            fixtheta_jnarg = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(theta_jn)
+
+
 
     # Determine upper frequency cutoff based on ISCO if requested
     if args.fhigh:
@@ -551,11 +569,9 @@ with open(submitFilePath,'w') as outfile:
 	outfile.write('  --no-detector-frame \\\n')
 
     outfile.write('  --distance-max {}\\\n'.format(distance_max))
-#Defunct Option?
-#   outfile.write('  --Niter {}\\\n'.format(args.Niter))
     outfile.write('  --neff {}\\\n'.format(args.Neff))
-    if args.rightAscension is not None:
-	    outfile.write('  --fix-rightascension --rightascension {}\\\n'.format(rightAscension))
+    if fixargs is not '':
+        outfile.write('  {}\\\n').format(fixargs))
     outfile.write('  {}'.format('\\\n  '.join(li_args)))
 
 # Make executable if not on quest
