@@ -345,9 +345,8 @@ elif args.inj and args.event is not None:
     	    proc = subprocess.Popen(shlex.split(commandline), stdout=subprocess.PIPE)
     	    output = proc.stdout.read()
 	    costheta_jn = output.split('costheta_jn')[1]
-	    print(costheta_jn)
-            theta_jn = costheta_jn.split(':')[1]
-	 
+            costheta_jn = costheta_jn.split(':')[1]
+	    costheta_jn = costheta_jn.split('injected')[0]
             fixargs = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(theta_jn)
 
 
