@@ -340,7 +340,12 @@ elif args.inj and args.event is not None:
             Dist = event.distance
             fixargs = fixargs + '  --fix-distance --distance {} '.format(Dist)
     if args.fix_costheta_jn:
-            theta_jn = 'test'
+	    commandline = './get_injection.py --inj {0} --event {1}'.format(args.inj,args.event)
+	    print('to get costheta_jn we must do a special command: {}'.format(commandline))
+    	    proc = subprocess.Popen(shlex.split(commandline), stdout=subprocess.PIPE)
+    	    output = proc.stdout.read()
+	    output.split('costheta_jn')
+            theta_jn = 
             fixargs = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(theta_jn)
 
 
