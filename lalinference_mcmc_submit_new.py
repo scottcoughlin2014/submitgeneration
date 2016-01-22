@@ -597,10 +597,37 @@ with open(submitFilePath,'w') as outfile:
     outfile.write('  {}'.format('\\\n  '.join(li_args)))
     outfile.write('\n')
     outfile.write('\n')
+    outfile.write('module load gcc/4.8.3\n')
+    outfile.write('\n')
     # Post-processing command line
 
     outfile.write('cbcBayesPostProc.py --lalinfmcmc --no2D -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --ellipticEvidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
     outfile.write('\n')
+
+# Create separate pp.sh in order to manually run PP when needed
+ppFilePath = os.path.join(out_dir, 'pp.sh')
+with open(ppFilePath,'w') as ppfile:
+        ppfile.write('ulimit -c unlimited\n')
+        ppfile.write('\n')
+
+        ppfile.write('module load python\n')
+        ppfile.write('module load mpi/openmpi-1.8.3-intel2015.0\n')
+        ppfile.write('module load gcc/4.8.3\n')
+        ppfile.write('\n')
+
+        ppfile.write('source /projects/b1011/non-lsc/lscsoft-user-env.sh\n')
+        ppfile.write('source /projects/b1011/ligo_project/lsc/o1_lalinference_20151210-3-gcee9c5e/etc/lscsoftrc\n')
+        ppfile.write('\n')
+
+        ppfile.write('cbcBayesPostProc.py --lalinfmcmc --no2D -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --ellipticEvidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+        ppfile.close()
+
+        system_call = 'chmod 755 {0}/pp.sh'.format(out_dir)
+        os.system(system_call)
+
+        ppsource = open('{0}/pp.sh'.format(args.homtpath),"a+")
+        ppsource.write('{0}/pp.sh\n'.format(out_dir))
+        ppsource.close()
 
 # Create file of individual msub ../submit commands
 
@@ -610,9 +637,6 @@ if not os.path.isdir(outputLocation):
     os.makedirs(outputLocation)
 
 dagFile = os.path.join(outputLocation,"msub.sh")
-if os.path.isfile(dagFile):
-    system_call = 'rm -rf {}'.format(dagFile)
-    os.system(system_call)
 
 f = open(dagFile, "a+") # write mode
 
