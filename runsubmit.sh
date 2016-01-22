@@ -21,4 +21,6 @@ for event in {0 11 44 101};
                    addflags= ""
                 fi;
 		./lalinference_mcmc_submit_new.py --inj /projects/b1011/spinning_runs/STT4injections.xml --event ${event} --approx SpinTaylorT4 --lowM1 5.0 --lowM2 1.0 --dir /projects/b1011/spinning_runs/freezingparams/${event}/${combo} ${addflags};
+	done;
+done;
 # --fix-distance --fix-rightascension --fix-declination --fix-costheta_jn
