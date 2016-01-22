@@ -249,9 +249,6 @@ elif args.era == 'advanced':
 # Check if caches specified in extra arguments
 caches_specified = check_for_arg_substring('cache', li_args)
 
-# Check for fixed params
-n_fixed_params = num_of_arg_substring('fix', li_args)
-
 # Check for params already marginalized by likelihood
 if not args.no_margtimephi:
     n_marg_params = 2
@@ -336,6 +333,8 @@ if args.trigtime is not None:
     trigtime_as_string = args.trigtime
     trigtime = float(args.trigtime)
 
+# Keep track of fixed params
+n_fixed_params = 0
 elif args.inj and args.event is not None:
     event = SimInspiralUtils.ReadSimInspiralFromFiles([args.inj])[args.event]
     trigtime = event.geocent_end_time + 1e-9*event.geocent_end_time_ns
@@ -348,12 +347,15 @@ elif args.inj and args.event is not None:
     if args.fix_rightascension:
 	    RA = event.longitude
 	    fixargs = fixargs + '  --fix-rightascension --rightascension {} '.format(RA)
+	    n_fixed_params +=1
     if args.fix_declination:
             DEC = event.latitude
             fixargs = fixargs + '  --fix-declination --declination {} '.format(DEC)
+            n_fixed_params +=1
     if args.fix_distance:
             Dist = event.distance
             fixargs = fixargs + '  --fix-distance --distance {} '.format(Dist)
+            n_fixed_params +=1
     if args.fix_costheta_jn:
 	    commandline = './get_injection.py --inj {0} --event {1}'.format(args.inj,args.event)
 	    print('to get costheta_jn we must do a special command: {}'.format(commandline))
@@ -364,6 +366,7 @@ elif args.inj and args.event is not None:
 	    costheta_jn = costheta_jn.split('injected')[0]
 	    costheta_jn = costheta_jn.split('\n')[0]
             fixargs = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(costheta_jn)
+            n_fixed_params +=1
 
 
 
