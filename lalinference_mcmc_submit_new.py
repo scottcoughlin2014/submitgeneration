@@ -336,7 +336,7 @@ if args.trigtime is not None:
 # Keep track of fixed params
 n_fixed_params = 0
 
-elif args.inj and args.event is not None:
+if args.inj and args.event is not None:
     event = SimInspiralUtils.ReadSimInspiralFromFiles([args.inj])[args.event]
     trigtime = event.geocent_end_time + 1e-9*event.geocent_end_time_ns
     trigtime_as_string = str(trigtime)
