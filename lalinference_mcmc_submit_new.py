@@ -68,7 +68,7 @@ msub.add_argument('--nPar', default=None, type=int,
         help='Number of dimensions for MCMC.  Defaults for common templates \
               are set, assuming no PSD fitting.')
 
-env.add_argument('--branch', default='o1_lalinference_20151210_v2',
+env.add_argument('--branch', default='o1_lalinference_20151210-3-gcee9c5e',
         help='Branchname to use, assuming \
               /projects/p20251/USER/lsc/BRANCHNAME/etc/lscsoftrc \
               exists (default=master).')
