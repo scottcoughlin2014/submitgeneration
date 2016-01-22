@@ -348,17 +348,17 @@ elif args.inj and args.event is not None:
     if args.fix_rightascension:
 	    RA = event.longitude
 	    fixargs = fixargs + '  --fix-rightascension --rightascension {} '.format(RA)
-	    n_fixed_params = n_fixed_params + 1
+            n_fixed_params = n_fixed_params + 1
 
     if args.fix_declination:
             DEC = event.latitude
             fixargs = fixargs + '  --fix-declination --declination {} '.format(DEC)
-	    n_fixed_params = n_fixed_params +1
+            n_fixed_params = n_fixed_params +1
 
     if args.fix_distance:
             Dist = event.distance
             fixargs = fixargs + '  --fix-distance --distance {} '.format(Dist)
-	    n_fixed_params = n_fixed_params + 1
+            n_fixed_params = n_fixed_params + 1
 
     if args.fix_costheta_jn:
 	    commandline = './get_injection.py --inj {0} --event {1}'.format(args.inj,args.event)
@@ -370,7 +370,7 @@ elif args.inj and args.event is not None:
 	    costheta_jn = costheta_jn.split('injected')[0]
 	    costheta_jn = costheta_jn.split('\n')[0]
             fixargs = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(costheta_jn)
-	    n_fixed_params = n_fixed_params +1
+            n_fixed_params = n_fixed_params +1
 
     # Determine upper frequency cutoff based on ISCO if requested
     if args.fhigh:
