@@ -625,7 +625,7 @@ with open(ppFilePath,'w') as ppfile:
         system_call = 'chmod 755 {0}/pp.sh'.format(out_dir)
         os.system(system_call)
 
-        ppsource = open('{0}/pp.sh'.format(args.homtpath),"a+")
+        ppsource = open('{0}/pp.sh'.format(args.homepath),"a+")
         ppsource.write('{0}/pp.sh\n'.format(out_dir))
         ppsource.close()
 
