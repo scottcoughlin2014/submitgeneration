@@ -326,6 +326,9 @@ elif args.era is 'initial':
 else:
     raise RuntimeError("No lower frequency bound provided.")
 
+# Keep track of fixed params
+n_fixed_params = 0
+
 # Determine trigger time (save precession read in)
 trigtime = None
 fhigh = None
@@ -333,10 +336,7 @@ if args.trigtime is not None:
     trigtime_as_string = args.trigtime
     trigtime = float(args.trigtime)
 
-# Keep track of fixed params
-n_fixed_params = 0
-
-if args.inj and args.event is not None:
+elif args.inj and args.event is not None:
     event = SimInspiralUtils.ReadSimInspiralFromFiles([args.inj])[args.event]
     trigtime = event.geocent_end_time + 1e-9*event.geocent_end_time_ns
     trigtime_as_string = str(trigtime)
