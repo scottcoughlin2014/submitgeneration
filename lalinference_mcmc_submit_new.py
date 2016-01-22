@@ -610,7 +610,7 @@ if not os.path.isdir(outputLocation):
     os.makedirs(outputLocation)
 
 dagFile = os.path.join(outputLocation,"msub.sh")
-if os.ipath.isfile(dagFile)
+if os.path.isfile(dagFile)
     system_call = 'rm -rf {}'.format(dagFile)
     os.system(system_call)
 
