@@ -67,6 +67,9 @@ msub.add_argument('--multiple-nodes', default=False, action='store_true',
 msub.add_argument('--nPar', default=None, type=int,
         help='Number of dimensions for MCMC.  Defaults for common templates \
               are set, assuming no PSD fitting.')
+msub.add_argument('--homepath', \
+        default = os.getcwd(),
+        help='Where the compilation of msub commands should go')
 msub.add_argument('--email', default = 'scottcoughlin2014@u.northwestern.edu',
         help='Email for when job starts, ends, or is aborted suddenly.')
 msub.add_argument('--emailyes', default=False, action='store_true',
