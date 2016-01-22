@@ -67,6 +67,10 @@ msub.add_argument('--multiple-nodes', default=False, action='store_true',
 msub.add_argument('--nPar', default=None, type=int,
         help='Number of dimensions for MCMC.  Defaults for common templates \
               are set, assuming no PSD fitting.')
+msub.add_argument('--email', default = 'scottcoughlin2014@u.northwestern.edu',
+        help='Email for when job starts, ends, or is aborted suddenly.')
+msub.add_argument('--emailyes', default=False, action='store_true',
+        help='Do you want email alert when job is finished?.')
 
 env.add_argument('--branch', default='o1_lalinference_20151210-3-gcee9c5e',
         help='Branchname to use, assuming \
