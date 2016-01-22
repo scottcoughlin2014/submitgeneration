@@ -595,7 +595,8 @@ with open(submitFilePath,'w') as outfile:
     if fixargs is not '':
         outfile.write('{}\\\n'.format(fixargs))
     outfile.write('  {}'.format('\\\n  '.join(li_args)))
-
+    outfile.write('\n')
+    outfile.write('\n')
     # Post-processing command line
 
     outfile.write('cbcBayesPostProc.py --lalinfmcmc --no2D -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --ellipticEvidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
