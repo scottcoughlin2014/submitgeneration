@@ -346,36 +346,36 @@ elif args.inj and args.event is not None:
     # Determine if fixed parameters have been asked for
     fixargs = ''
     if args.fix_rightascension:
-	    RA = event.longitude
-	    fixargs = fixargs + '  --fix-rightascension --rightascension {} '.format(RA)
-	    n_fixed_params +=1
+		RA = event.longitude
+		fixargs = fixargs + '  --fix-rightascension --rightascension {} '.format(RA)
+		n_fixed_params +=1
 
     if args.fix_declination:
-            DEC = event.latitude
-            fixargs = fixargs + '  --fix-declination --declination {} '.format(DEC)
-            n_fixed_params +=1
+		DEC = event.latitude
+		fixargs = fixargs + '  --fix-declination --declination {} '.format(DEC)
+		n_fixed_params +=1
 
     if args.fix_distance:
-            Dist = event.distance
-            fixargs = fixargs + '  --fix-distance --distance {} '.format(Dist)
-            n_fixed_params +=1
+		Dist = event.distance
+		fixargs = fixargs + '  --fix-distance --distance {} '.format(Dist)
+		n_fixed_params +=1
 
     if args.fix_costheta_jn:
-	    commandline = './get_injection.py --inj {0} --event {1}'.format(args.inj,args.event)
-	    print('to get costheta_jn we must do a special command: {}'.format(commandline))
-    	    proc = subprocess.Popen(shlex.split(commandline), stdout=subprocess.PIPE)
-    	    output = proc.stdout.read()
-	    costheta_jn = output.split('costheta_jn')[1]
-            costheta_jn = costheta_jn.split(':')[1]
-	    costheta_jn = costheta_jn.split('injected')[0]
-	    costheta_jn = costheta_jn.split('\n')[0]
-            fixargs = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(costheta_jn)
-	    n_fixed_params +=1
+		commandline = './get_injection.py --inj {0} --event {1}'.format(args.inj,args.event)
+		print('to get costheta_jn we must do a special command: {}'.format(commandline))
+		proc = subprocess.Popen(shlex.split(commandline), stdout=subprocess.PIPE)
+		output = proc.stdout.read()
+		costheta_jn = output.split('costheta_jn')[1]
+		costheta_jn = costheta_jn.split(':')[1]
+		costheta_jn = costheta_jn.split('injected')[0]
+		costheta_jn = costheta_jn.split('\n')[0]
+		fixargs = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(costheta_jn)
+		n_fixed_params +=1
 
     # Determine upper frequency cutoff based on ISCO if requested
     if args.fhigh:
-        f_isco = ISCO(event.mass1, event.mass2)
-        fhigh = args.fhigh * f_isco
+		f_isco = ISCO(event.mass1, event.mass2)
+		fhigh = args.fhigh * f_isco
 
 # Calculate any arguments not specified
 if calcSNR:
