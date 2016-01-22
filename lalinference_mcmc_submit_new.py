@@ -187,6 +187,14 @@ else:
     out_dir = os.path.abspath(args.dir)
     submitFilePath = os.path.join(out_dir, args.name)
 
+# Setup output directory for post processing
+if not os.path.isdir(out_dir):
+    os.makedirs(out_dir)
+
+webdir = "%s/post"%out_dir
+if not os.path.isdir(webdir):
+   os.makedirs(webdir)
+
 # Setup and check envirnment files to be sourced
 rcs = args.rc if args.rc else []
 
@@ -581,6 +589,30 @@ with open(submitFilePath,'w') as outfile:
         outfile.write('{}\\\n'.format(fixargs))
     outfile.write('  {}'.format('\\\n  '.join(li_args)))
 
+    # Post-processing command line
+
+    outfile.write('cbcBayesPostProc.py --lalinfmcmc --no2D -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --ellipticEvidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+    outfile.write('\n')
+
+# Create file of individual msub ../submit commands
+
+outputLocation = ('{}/condor'.format(args.homepath))
+
+if not os.path.isdir(outputLocation):
+    os.makedirs(outputLocation)
+
+dagFile = os.path.join(outputLocation,"msub.sh")
+
+f = open(dagFile, "a+") # write mode
+
+# The flag -a and -e will inform user when job has ended or been aborted
+
+if args.emailyes:
+        f.write('msub -m ae -M {} {}/submit\n'.format(args.email,out_dir))
+else:
+        f.write('msub {}/submit\n'.format(out_dir))
+f.write('\n\n')
+f.close()
 # Make executable if not on quest
 if not on_quest:
     st = os.stat(submitFilePath)
