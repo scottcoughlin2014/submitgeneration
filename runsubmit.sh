@@ -15,10 +15,10 @@ for event in 11 44;
                    addflags="--fix-rightascension --fix-declination --fix-distance"
                 elif [ ${combo} = "skyloc_thetajn_dist" ]; then
                    addflags="--fix-rightascension --fix-declination --fix-costheta_jn"
-                elif [ ${combo} = "skyloc__thetajn_dist" ]; then
+                elif [ ${combo} = "skyloc_thetajn_dist" ]; then
                    addflags="--fix-rightascension --fix-declination --fix-costheta_jn --fix-distance"
                 else
-                   addflags= ""
+                   addflags=""
                 fi;
 		./lalinference_mcmc_submit_new.py --inj /projects/b1011/spinning_runs/STT4injections.xml --event ${event} --approx SpinTaylorT4 --lowM1 5.0 --lowM2 1.0 --dir /projects/b1011/spinning_runs/freezingparams/${event}/${combo} ${addflags};
 	done;
