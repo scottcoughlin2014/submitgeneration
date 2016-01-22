@@ -7,7 +7,7 @@ source /projects/b1011/ligo_project/lsc/o1_lalinference_20151210/etc/lscsoftrc
 
 rm -rf ./condor
 
-for event in {0 11 44 101};
+for event in 11 44;
 	do for combo in "none" "skyloc" "skyloc_dist" "skyloc_thetajn" "skyloc_thetajn_dist";
                 do if [ ${combo} = "skyloc" ]; then
                    addflags="--fix-rightascension --fix-declination"
