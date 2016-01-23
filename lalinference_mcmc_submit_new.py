@@ -224,7 +224,7 @@ if not args.sim_quest:
     rcs[:] = [rc for rc in rcs if exists(rc)]
 
 # Necessary modules
-modules = ['python','module load mpi/openmpi-1.8.3-intel2015.0']
+modules = ['python','mpi/openmpi-1.8.3-intel2015.0']
 unload_modules = []
 
 # Determine which simulated PSD to use.
