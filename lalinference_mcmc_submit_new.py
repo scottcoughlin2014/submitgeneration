@@ -315,6 +315,8 @@ else:
     raise RuntimeError("No lower frequency bound provided.")
 
 flow = temp_flow
+# set fref to flow
+fref = flow
 
 # Default to different starting max distances for different eras:
 if args.distance_max is not None:
@@ -597,6 +599,7 @@ with open(submitFilePath,'w') as outfile:
 
     outfile.write('  --distance-max {}\\\n'.format(distance_max))
     outfile.write('  --neff {}\\\n'.format(args.Neff))
+    outfile.write('  --fref {}\\\n'.format(fref))
     if fixargs is not '':
         outfile.write('{}\\\n'.format(fixargs))
     outfile.write('  {}'.format('\\\n  '.join(li_args)))
@@ -606,7 +609,7 @@ with open(submitFilePath,'w') as outfile:
     outfile.write('\n')
     # Post-processing command line
 
-    outfile.write('cbcBayesPostProc.py --lalinfmcmc --no2D -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --ellipticEvidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+    outfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --ellipticEvidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
     outfile.write('\n')
 
 # Create separate pp.sh in order to manually run PP when needed
@@ -624,7 +627,7 @@ with open(ppFilePath,'w') as ppfile:
         ppfile.write('source /projects/b1011/ligo_project/lsc/o1_lalinference_20151210-3-gcee9c5e/etc/lscsoftrc\n')
         ppfile.write('\n')
 
-        ppfile.write('cbcBayesPostProc.py --lalinfmcmc --no2D -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --ellipticEvidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+        ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --ellipticEvidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
         ppfile.close()
 
         system_call = 'chmod 755 {0}/pp.sh'.format(out_dir)
