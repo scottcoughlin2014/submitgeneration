@@ -2,6 +2,7 @@
 import lalsimulation as lalsim
 
 import os
+import glob
 import stat
 import argparse
 import getpass
@@ -91,6 +92,8 @@ li_mcmc.add_argument('--era', default='advanced',
         help='Era ("initial" or "advanced") of detector PSD for SNR \
               calculation. If no cache arguments given, this will add the \
               appropriate analytical PSD arguments to the submit file.')
+li_mcmc.add_argument('--resume', default=False, action='store_true',
+        help='What to resume?')
 li_mcmc.add_argument('--psd', nargs='+',
         help='Pre-computed PSD(s), either as a single xml, or list of ascii\
               files, one for each IFO in the order the IFOs were specified. \
@@ -515,6 +518,16 @@ if not caches_specified:
     cache_args = \
         ['--{}-cache {}'.format(ifo, noise_psd_caches[ifo]) for ifo in ifos]
 
+# Want to resume a run?
+if args.resume:
+	commandline = 'grep "seed" {0}'.format(glob.glob(submitFilePath + '.*')[0])
+        proc = subprocess.Popen(shlex.split(commandline), stdout=subprocess.PIPE)
+        output = proc.stdout.read()
+	randomseed = output.split('seed:')[1]
+	randomseed = randomseed.split('\n')[0]
+	print('randomseed = {0}'.format(randomseed))
+	resumeargs= '  --resume --randomseed {0}'.format(randomseed)
+
 # Specify number of cores on the command line
 runline = 'mpirun -n {} lalinference_mcmc'.format(n_chains)
 
@@ -590,6 +603,9 @@ with open(submitFilePath,'w') as outfile:
     outfile.write('  --srate {:g}\\\n'.format(srate))
     outfile.write('  --seglen {:g}\\\n'.format(seglen))
     outfile.write('  --approx {}\\\n'.format(args.approx))
+    if args.resume:
+	outfile.write('{}\\\n'.format(resumeargs))
+
     if amp_order is not None:
         outfile.write('  --amporder {}\\\n'.format(amp_order))
 
@@ -609,7 +625,7 @@ with open(submitFilePath,'w') as outfile:
     outfile.write('\n')
     # Post-processing command line
 
-    outfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --ellipticEvidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+    outfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
     outfile.write('\n')
 
 # Create separate pp.sh in order to manually run PP when needed
@@ -627,7 +643,7 @@ with open(ppFilePath,'w') as ppfile:
         ppfile.write('source /projects/b1011/ligo_project/lsc/o1_lalinference_20151210-3-gcee9c5e/etc/lscsoftrc\n')
         ppfile.write('\n')
 
-        ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --ellipticEvidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+        ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence  --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
         ppfile.close()
 
         system_call = 'chmod 755 {0}/pp.sh'.format(out_dir)
