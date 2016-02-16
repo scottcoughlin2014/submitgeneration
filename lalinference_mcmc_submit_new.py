@@ -175,9 +175,6 @@ args,unknown = parser.parse_known_args()
 # Assume all unknown arguments are meant for lalinference_mcmc
 li_args = unknown
 
-# Directories to look for lscsoftrc files on Quest
-user_dict = {'bff394':'bfarr'}
-
 # If not on quser##, don't bother making a submit file
 if 'quser' in socket.gethostname() or args.sim_quest:
     on_quest = True
