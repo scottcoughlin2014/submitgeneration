@@ -168,6 +168,11 @@ li_mcmc.add_argument('--fix-distance', default=False, action='store_true',
 li_mcmc.add_argument('--fix-costheta_jn', default=False, action='store_true',
         help='Fix costheta_jn')
 
+##########################################################################
+##########################################################################
+################             MAIN                #########################
+##########################################################################
+##########################################################################
 
 args,unknown = parser.parse_known_args()
 
@@ -387,7 +392,7 @@ if calcSNR:
     output = proc.stdout.read()
     dur = float(output.split()[19])
     fhighend  = float(output.split()[12])
-    srate = power_log(fhighend)
+    srate = power_log(2*fhighend)
     seglen = power_log(dur)
 
     print('F Low of waveform = {}'.format(float(output.split()[5])))
