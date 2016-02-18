@@ -401,7 +401,7 @@ if calcSNR:
     print('Duration of Waveform = {}'.format(dur))
     print('Segment Length of waveform based on Duration = {}'.format(seglen))
 
-    commandline = './pyburst_inj_snr {} --det-psd-func=H1=SimNoisePSDaLIGOZeroDetHighPower --det-psd-func=L1=SimNoisePSDaLIGOZeroDetHighPower --det-psd-func=V1=SimNoisePSDAdvVirgo  --low-frequency-cutoff={} --nyquist-frequency={} --waveform-length={}  --sim-id {} --skip-coherent-snr --no-print-single-ifo'.format(args.inj,flow,srate,seglen,simid)
+    commandline = './pyburst_inj_snr {} --det-psd-func=H1=SimNoisePSDaLIGOZeroDetHighPower --det-psd-func=L1=SimNoisePSDaLIGOZeroDetHighPower --det-psd-func=V1=SimNoisePSDAdvVirgo  --low-frequency-cutoff={} --nyquist-frequency={} --waveform-length={}  --sim-id {} --skip-coherent-snr --no-print-single-ifo'.format(args.inj,flow,power_log(fhighend),seglen,simid)
     print('Command to find Network SNR so we can set temperature ladders: ' +commandline)
     
     proc = subprocess.Popen(shlex.split(commandline), stdout=subprocess.PIPE)
