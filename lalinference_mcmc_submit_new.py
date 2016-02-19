@@ -354,17 +354,17 @@ elif args.inj and args.event is not None:
     fixargs = ''
     if args.fix_rightascension:
 		RA = event.longitude
-		fixargs = fixargs + '  --fix-rightascension --rightascension {} '.format(RA)
+		fixargs = fixargs + '  --fix-rightascension {} '.format(RA)
 		n_fixed_params +=1
 
     if args.fix_declination:
 		DEC = event.latitude
-		fixargs = fixargs + '  --fix-declination --declination {} '.format(DEC)
+		fixargs = fixargs + '  --fix-declination {} '.format(DEC)
 		n_fixed_params +=1
 
     if args.fix_distance:
 		Dist = event.distance
-		fixargs = fixargs + '  --fix-distance --distance {} '.format(Dist)
+		fixargs = fixargs + '  --fix-distance {} '.format(log(Dist))
 		n_fixed_params +=1
 
     if args.fix_costheta_jn:
@@ -376,7 +376,7 @@ elif args.inj and args.event is not None:
 		costheta_jn = costheta_jn.split(':')[1]
 		costheta_jn = costheta_jn.split('injected')[0]
 		costheta_jn = costheta_jn.split('\n')[0]
-		fixargs = fixargs + '  --fix-costheta_jn --costheta_jn {} '.format(costheta_jn)
+		fixargs = fixargs + '  --fix-costheta_jn {} '.format(costheta_jn)
 		n_fixed_params +=1
 
     # Determine upper frequency cutoff based on ISCO if requested
