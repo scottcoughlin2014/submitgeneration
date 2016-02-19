@@ -364,7 +364,7 @@ elif args.inj and args.event is not None:
 
     if args.fix_distance:
 		Dist = event.distance
-		fixargs = fixargs + '  --fix-distance {} '.format(log(Dist))
+		fixargs = fixargs + '  --fix-logdistance {} '.format(np.log(Dist))
 		n_fixed_params +=1
 
     if args.fix_costheta_jn:
