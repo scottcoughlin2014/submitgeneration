@@ -8,6 +8,8 @@ from optparse import OptionParser
 import itertools
 import hashlib
 
+import lal
+
 import numpy
 import scipy.optimize
 
@@ -22,7 +24,6 @@ from pylal import antenna
 #from pylal import coherent_inspiral_metric_detector_details as details
 from pylal.series import read_psd_xmldoc, LIGOLWContentHandler
 
-import lal
 import lalburst
 import lalsimulation
 import lalmetaio
