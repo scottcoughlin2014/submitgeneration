@@ -76,7 +76,7 @@ msub.add_argument('--email', default = 'scottcoughlin2014@u.northwestern.edu',
 msub.add_argument('--emailyes', default=False, action='store_true',
         help='Do you want email alert when job is finished?.')
 
-env.add_argument('--branch', default='o1_lalinference_20151210_SpinFix',
+env.add_argument('--branch', default='o1_lalinference_20151210_v2-6-g25fe0e2',
         help='Branchname to use, assuming \
               /projects/p20251/USER/lsc/BRANCHNAME/etc/lscsoftrc \
               exists (default=master).')
