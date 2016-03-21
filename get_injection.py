@@ -138,8 +138,8 @@ def calculate_injected_sys_frame_params(sim_inspiral_event, f_ref = 100.0):
     S1 = np.hstack((s1x, s1y, s1z))
     S2 = np.hstack((s2x, s2y, s2z))
 
-    S1 *= m1**2
-    S2 *= m2**2
+    S1 *= sim_inspiral_event.mass1**2
+    S2 *= sim_inspiral_event.mass2**2
     J = L + S1 + S2
 
     tilt1 = array_ang_sep(L, S1) if not all([i==0.0 for i in S1]) else 0.0
