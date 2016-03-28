@@ -16,6 +16,15 @@ injname = args.inj
 event = args.event
 frame = args.frame
 
+def sph2cart(r,theta,phi):
+    """
+    Utiltiy function to convert r,theta,phi to cartesian co-ordinates.
+    """
+    x = r*np.sin(theta)*np.cos(phi)
+    y = r*np.sin(theta)*np.sin(phi)
+    z = r*np.cos(theta)
+    return x,y,z
+
 def cart2sph(x,y,z):
     """
     Utility function to convert cartesian coords to r,theta,phi.
@@ -26,49 +35,6 @@ def cart2sph(x,y,z):
 
     return r,theta,phi
 
-def ROTATEZ(angle, vx, vy, vz):
-    # This is the ROTATEZ in LALSimInspiral.c.
-    tmp1 = vx*np.cos(angle) - vy*np.sin(angle);
-    tmp2 = vx*np.sin(angle) + vy*np.cos(angle);
-    return np.asarray([tmp1,tmp2,vz])
-
-def ROTATEY(angle, vx, vy, vz):
-    # This is the ROTATEY in LALSimInspiral.c
-    tmp1 = vx*np.cos(angle) + vz*np.sin(angle);
-    tmp2 = - vx*np.sin(angle) + vz*np.cos(angle);
-    return np.asarray([tmp1,vy,tmp2])
-
-def orbital_momentum(fref, mc, inclination):
-    """
-    Calculate orbital angular momentum vector.
-    Note: The units of Lmag are different than what used in lalsimulation.
-    Mc must be called in units of Msun here.
-
-    Note that if one wants to build J=L+S1+S2 with L returned by this function, S1 and S2
-    must not get the Msun^2 factor.
-    """
-    Lmag = np.power(mc, 5.0/3.0) / np.power(np.pi * lal.MTSUN_SI * fref, 1.0/3.0)
-    Lx, Ly, Lz = sph2cart(Lmag, inclination, 0.0)
-    return np.hstack((Lx,Ly,Lz))
-
-
-def sph2cart(r,theta,phi):
-    """
-    Utiltiy function to convert r,theta,phi to cartesian co-ordinates.
-    """
-    x = r*np.sin(theta)*np.cos(phi)
-    y = r*np.sin(theta)*np.sin(phi)
-    z = r*np.cos(theta)
-    return x,y,z
-
-def array_ang_sep(vec1, vec2):
-    """
-    Find angles between vectors in rows of numpy arrays.
-    """
-    vec1_mag = np.sqrt(array_dot(vec1, vec1))
-    vec2_mag = np.sqrt(array_dot(vec2, vec2))
-    return np.arccos(array_dot(vec1, vec2)/(vec1_mag*vec2_mag))
-
 def array_dot(vec1, vec2):
     """
     Calculate dot products between vectors in rows of numpy arrays.
@@ -78,6 +44,16 @@ def array_dot(vec1, vec2):
     else:
         product = (vec1*vec2).sum(axis=1).reshape(-1,1)
     return product
+
+
+
+def array_ang_sep(vec1, vec2):
+    """
+    Find angles between vectors in rows of numpy arrays.
+    """
+    vec1_mag = np.sqrt(array_dot(vec1, vec1))
+    vec2_mag = np.sqrt(array_dot(vec2, vec2))
+    return np.arccos(array_dot(vec1, vec2)/(vec1_mag*vec2_mag))
 
 def array_polar_ang(vec):
     """
@@ -90,17 +66,40 @@ def array_polar_ang(vec):
     norm = np.sqrt(array_dot(vec,vec))
     return np.arccos(z/norm)
 
+#}}}
+
+def orbital_momentum(f_ref, mc, inclination, m1,m2,eta):
+    #{{{
+    Lmag = np.power(mc, 5.0/3.0) / np.power(pi * lal.MTSUN_SI * fref, 1.0/3.0)
+    v0 = ((m1+m2)*lal.MTSUN_SI * np.pi *f_ref)**(1./3.)
+    Lmag= Lmag*(1.0 + (v0**2) *  (2.5 -eta/6.) )
+
+    Lx, Ly, Lz = sph2cart(Lmag, inclination, 0.0)
+    return np.hstack((Lx,Ly,Lz))
+
+def ROTATEZ(angle, vx, vy, vz):
+    # This is the ROTATEZ in LALSimInspiral.c.
+    tmp1 = vx*np.cos(angle) - vy*np.sin(angle);
+    tmp2 = vx*np.sin(angle) + vy*np.cos(angle);
+    return np.asarray([tmp1,tmp2,vz])
+
+def ROTATEY(angle, vx, vy, vz):
+    # This is the ROTATEY in LALSimInspiral.c
+    tmp1 = vx*np.cos(angle) + vz*np.sin(angle);
+    tmp2 = -1.0*vx*np.sin(angle) + vz*np.cos(angle);
+    return np.asarray([tmp1,vy,tmp2])
+
 def extract_inj_vals(sim_inspiral_event):
     a1, a2, spin1z, spin2z, theta_jn, phi_jl, tilt1, tilt2, phi12 = calculate_injected_sys_frame_params(sim_inspiral_event)
     injvals={
         'mc'          : sim_inspiral_event.mchirp,
-        'q'           : sim_inspiral_event.mass2/sim_inspiral_event.mass1,
-        'time'        : float(sim_inspiral_event.get_end()),
-        'phi_orb'     : sim_inspiral_event.coa_phase,
+	'q'           : sim_inspiral_event.mass2/sim_inspiral_event.mass1,
+	'time'        : float(sim_inspiral_event.get_end()),
+	'phi_orb'     : sim_inspiral_event.coa_phase,
         'dist'        : sim_inspiral_event.distance,
         'logdistance' : np.log(sim_inspiral_event.distance),
         'ra'          : sim_inspiral_event.longitude,
-        'dec'         : sim_inspiral_event.latitude,
+	'dec'         : sim_inspiral_event.latitude,
         'sindec'      : np.sin(sim_inspiral_event.latitude),
         'psi'         : np.mod(sim_inspiral_event.polarization, np.pi),
         'a1'          : a1,
@@ -119,28 +118,39 @@ def extract_inj_vals(sim_inspiral_event):
     return injvals
 
 def calculate_injected_sys_frame_params(sim_inspiral_event, f_ref = 100.0):
-    # Taken from pylal bayespputils.py
-    axis = lalsim.SimInspiralGetFrameAxisFromString(frame)
 
-    m1, m2 = sim_inspiral_event.mass1, sim_inspiral_event.mass2
-    m1 *= lal.MSUN_SI
-    m2 *= lal.MSUN_SI
-    mc, eta = sim_inspiral_event.mchirp, sim_inspiral_event.eta
+    # Extract injection parameters.
+    m1 = sim_inspiral_event.mass1
+    m2 = sim_inspiral_event.mass2
+    m1_MSUN = m1*lal.MSUN_SI
+    m2_MSUN = m2*lal.MSUN_SI
+    mc = sim_inspiral_event.mchirp
+    eta = sim_inspiral_event.eta
+
+    # Calc Lmag
+    L = orbital_momentum(f_ref, sim_inspiral_event.mchirp, sim_inspiral_event.inclination,m1,m2,eta)
+
+    # Get axis from frame
+    axis = lalsim.SimInspiralGetFrameAxisFromString(frame)
 
     # Convert to radiation frame
     iota, s1x, s1y, s1z, s2x, s2y, s2z = \
-          lalsim.SimInspiralInitialConditionsPrecessingApproxs(sim_inspiral_event.inclination,sim_inspiral_event.spin1x, sim_inspiral_event.spin1y, sim_inspiral_event.spin1z, sim_inspiral_event.spin2x, sim_inspiral_event.spin2y, sim_inspiral_event.spin2z, m1, m2, f_ref, axis)
+          lalsim.SimInspiralInitialConditionsPrecessingApproxs(sim_inspiral_event.inclination,sim_inspiral_event.spin1x, sim_inspiral_event.spin1y, sim_inspiral_event.spin1z, sim_inspiral_event.spin2x, sim_inspiral_event.spin2y, sim_inspiral_event.spin2z, m1_MSUN, m2_MSUN, f_ref, axis)
 
     a1, theta1, phi1 = cart2sph(s1x, s1y, s1z)
     a2, theta2, phi2 = cart2sph(s2x, s2y, s2z)
 
-    L  = orbital_momentum(f_ref, sim_inspiral_event.mchirp, sim_inspiral_event.inclination)
     S1 = np.hstack((s1x, s1y, s1z))
     S2 = np.hstack((s2x, s2y, s2z))
 
-    S1 *= sim_inspiral_event.mass1**2
-    S2 *= sim_inspiral_event.mass2**2
+    S1 *= m1**2
+    S2 *= m2**2
     J = L + S1 + S2
+
+    J = ROTATEY(-2.0*iota, J[0], J[1], J[2])
+    L = ROTATEY(-2.0*iota, L[0], L[1], L[2])
+    S1 = ROTATEY(-2.0*iota, S1[0], S1[1], S1[2])
+    S2 = ROTATEY(-2.0*iota, S2[0], S2[1], S2[2])
 
     tilt1 = array_ang_sep(L, S1) if not all([i==0.0 for i in S1]) else 0.0
     tilt2 = array_ang_sep(L, S2) if not all([i==0.0 for i in S2]) else 0.0
