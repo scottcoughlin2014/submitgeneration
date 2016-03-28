@@ -70,7 +70,7 @@ def array_polar_ang(vec):
 
 def orbital_momentum(f_ref, mc, inclination, m1,m2,eta):
     #{{{
-    Lmag = np.power(mc, 5.0/3.0) / np.power(pi * lal.MTSUN_SI * fref, 1.0/3.0)
+    Lmag = np.power(mc, 5.0/3.0) / np.power(np.pi * lal.MTSUN_SI * fref, 1.0/3.0)
     v0 = ((m1+m2)*lal.MTSUN_SI * np.pi *f_ref)**(1./3.)
     Lmag= Lmag*(1.0 + (v0**2) *  (2.5 -eta/6.) )
 
