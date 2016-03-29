@@ -224,7 +224,7 @@ def calculate_injected_sys_frame_params(sim_inspiral_event, f_ref = 100.0):
 
          phi_jl = phi_jl + 2.0*np.pi
 
-    return a1, a2, spin1z, spin2z, theta_jn, phi_jl, tilt1, tilt2, phi12
+    return a1, a2, s1z, s2z, theta_jn, phi_jl, tilt1, tilt2, phi12
 
 ###### DO STUFF
 
