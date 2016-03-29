@@ -68,14 +68,17 @@ def array_polar_ang(vec):
 
 #}}}
 
-def orbital_momentum(f_ref, mc, inclination, m1,m2,eta):
-    #{{{
+def orbital_momentum_leadord(f_ref, mc, m1,m2,eta):
+    """
+    in computation of the Lmag (magnitude of orbital ang. momentum), 
+    the function SimInspiralTransformPrecessingNewInitialConditions uses 
+    expression up to next-to-leading order, whereas 
+    _inj_spins uses newtonian expression
+    """
     Lmag = np.power(mc, 5.0/3.0) / np.power(np.pi * lal.MTSUN_SI * f_ref, 1.0/3.0)
     v0 = ((m1+m2)*lal.MTSUN_SI * np.pi *f_ref)**(1./3.)
     Lmag= Lmag*(1.0 + (v0**2) *  (2.5 -eta/6.) )
-
-    Lx, Ly, Lz = sph2cart(Lmag, inclination, 0.0)
-    return np.hstack((Lx,Ly,Lz))
+    return Lmag
 
 def ROTATEZ(angle, vx, vy, vz):
     # This is the ROTATEZ in LALSimInspiral.c.
