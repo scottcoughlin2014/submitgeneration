@@ -222,9 +222,7 @@ def calculate_injected_sys_frame_params(sim_inspiral_event, f_ref = 100.0):
     phi_jl = np.arctan2(L[1], L[0])
     if (phi_jl < 0):
 
-       phi_jl[i] = phi_jl + 2.0*pi
-
-    spins['phi_jl'] = phi_jl
+         phi_jl = phi_jl + 2.0*np.pi
 
     return a1, a2, spin1z, spin2z, theta_jn, phi_jl, tilt1, tilt2, phi12
 
