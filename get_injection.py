@@ -6,6 +6,16 @@ from pylal import SimInspiralUtils
 import lal
 import lalsimulation as lalsim
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--inj", dest="inj", default=None, help="Injection XML Path")
+parser.add_argument("--event", dest ="event", type=int, default=None, help="Event Number")
+parser.add_argument("--frame", dest ="frame", default="OrbitalL", help="Spin Frame of injection")
+args = parser.parse_args()
+
+injname = args.inj
+event = args.event
+frame = args.frame
+
 def sph2cart(r,theta,phi):
     """
     Utiltiy function to convert r,theta,phi to cartesian co-ordinates.
@@ -79,6 +89,14 @@ def ROTATEY(angle, vx, vy, vz):
     tmp2 = -1.0*vx*np.sin(angle) + vz*np.cos(angle);
     return np.asarray([tmp1,vy,tmp2])
 
+def angle(x, y):
+
+    norm1 = np.dot(x, x)
+    norm2 = np.dot(y, y)
+    ph = np.arccos(np.dot(x, y)/np.sqrt(norm1*norm2))
+
+    return (ph)
+
 def extract_inj_vals(sim_inspiral_event):
     a1, a2, spin1z, spin2z, theta_jn, phi_jl, tilt1, tilt2, phi12 = calculate_injected_sys_frame_params(sim_inspiral_event)
     injvals={
@@ -109,6 +127,7 @@ def extract_inj_vals(sim_inspiral_event):
 
 def calculate_injected_sys_frame_params(sim_inspiral_event, f_ref = 100.0):
 
+    inj = sim_inspiral_event
     # To do this we should extract the parameters of
     # our binary system
     m1  = inj.mass1
