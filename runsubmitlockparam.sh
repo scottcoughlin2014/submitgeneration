@@ -3,7 +3,7 @@
 module load python
 module load mpi/openmpi-1.8.3-intel2015.0
 
-source /projects/b1011/ligo_project/lsc/o1_lalinference_20151210/etc/lscsoftrc
+source /projects/b1011/ligo_project/lsc/o1_lalinference_20160402/etc/lscsoftrc
 
 rm -rf ./condor
 
