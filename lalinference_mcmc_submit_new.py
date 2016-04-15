@@ -631,24 +631,25 @@ with open(submitFilePath,'w') as outfile:
     outfile.write('\n')
 
 # Write heder to massive pp so it can be quest job
-ppsource = open('{0}/pp.sh'.format(args.homepath),"a+")
-ppsource.write('#MSUB -A {}\n'.format(args.alloc))
-ppsource.write('#MSUB -q {}\n'.format(args.queue))
+if not os.path.isfile('{0}/pp.sh'.format(args.homepath)):
+    ppsource = open('{0}/pp.sh'.format(args.homepath),"a+")
+    ppsource.write('#MSUB -A {}\n'.format(args.alloc))
+    ppsource.write('#MSUB -q {}\n'.format(args.queue))
 
-ppsource.write('#MSUB -l walltime={}\n'.format(args.walltime))
-ppsource.write('#MSUB -l nodes=1:ppn=1\n')
+    ppsource.write('#MSUB -l walltime={}\n'.format(args.walltime))
+    ppsource.write('#MSUB -l nodes=1:ppn=1\n')
 
-ppsource.write('#MSUB -N fullPP\n')
+    ppsource.write('#MSUB -N fullPP\n')
 
-# Give read permissions to screen output
-ppsource.write('#MOAB -W umask=022\n')
+    # Give read permissions to screen output
+    ppsource.write('#MOAB -W umask=022\n')
 
-# Write stdout and stderr to the same file
-ppsource.write('#MSUB -j oe\n')
+    # Write stdout and stderr to the same file
+    ppsource.write('#MSUB -j oe\n')
 
-# Job working directory
-ppsource.write('#MSUB -d {}\n'.format(args.homepath))
-ppsource.close()
+    # Job working directory
+    ppsource.write('#MSUB -d {}\n'.format(args.homepath))
+    ppsource.close()
 
 # Create separate pp.sh in order to manually run PP when needed
 ppFilePath = os.path.join(out_dir, 'pp.sh')
