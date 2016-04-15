@@ -171,6 +171,8 @@ li_mcmc.add_argument('--ppall', default=False, action='store_true',
         help='Post Process ALL chains')
 li_mcmc.add_argument('--compare', default=False, action='store_true',
         help='Generate Script that will make comparison pages of all runs you just generated')
+li_mcmc.add_argument('--plot-2d', default=False, action='store_true',
+        help='Want 2D plots?')
 
 ##########################################################################
 ##########################################################################
@@ -670,8 +672,10 @@ with open(ppFilePath,'w') as ppfile:
         ppfile.write('source /projects/b1011/ligo_project/lsc/o1_lalinference_20160402/etc/lscsoftrc\n')
         ppfile.write('\n')
 
-        ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence  --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
-
+	if args.plot_2d:
+	        ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence  --skyres=.5 --deltaLogL {} --plot-2d\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+	else:
+		ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence  --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
 	if args.ppall:
 		for i in xrange(1,n_chains):
 			ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={}{} -d {}/PTMCMC.output.*.0{} --dievidence  --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,i,out_dir,i,target_hot_like))
