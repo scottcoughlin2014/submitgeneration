@@ -674,7 +674,7 @@ with open(ppFilePath,'w') as ppfile:
 
 	if args.ppall:
 		for i in xrange(1,n_chains):
-			ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.0{} --dievidence  --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,i,target_hot_like))
+			ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={}{} -d {}/PTMCMC.output.*.0{} --dievidence  --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,i,out_dir,i,target_hot_like))
 	else:
 		ppfile.close()
 
