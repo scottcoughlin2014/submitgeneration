@@ -167,6 +167,10 @@ li_mcmc.add_argument('--fix-distance', default=False, action='store_true',
         help='Fix Distance')
 li_mcmc.add_argument('--fix-costheta_jn', default=False, action='store_true',
         help='Fix costheta_jn')
+li_mcmc.add_argument('--ppall', default=False, action='store_true',
+        help='Post Process ALL chains')
+li_mcmc.add_argument('--compare', default=False, action='store_true',
+        help='Generate Script that will make comparison pages of all runs you just generated')
 
 ##########################################################################
 ##########################################################################
@@ -667,7 +671,12 @@ with open(ppFilePath,'w') as ppfile:
         ppfile.write('\n')
 
         ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence  --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
-        ppfile.close()
+
+	if args.ppall:
+		for i in xrange(1,n_chains):
+			ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.0{} --dievidence  --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,i,target_hot_like))
+	else:
+		ppfile.close()
 
         system_call = 'chmod 755 {0}/pp.sh'.format(out_dir)
         os.system(system_call)
@@ -675,6 +684,26 @@ with open(ppFilePath,'w') as ppfile:
         ppsource = open('{0}/pp.sh'.format(args.homepath),"a+")
         ppsource.write('{0}/pp.sh\n'.format(out_dir))
         ppsource.close()
+
+if args.compare:
+	if not os.path.isfile('{0}/compare.sh'.format(args.homepath)):
+		compare = open('{0}/compare.sh'.format(args.homepath))
+		ppsource.write('#MSUB -A {}\n'.format(args.alloc))
+		ppsource.write('#MSUB -q {}\n'.format(args.queue))
+
+    		ppsource.write('#MSUB -l walltime={}\n'.format(args.walltime))
+    		ppsource.write('#MSUB -l nodes=1:ppn=1\n')
+	
+    		ppsource.write('#MSUB -N fullPP\n')
+
+    		# Give read permissions to screen output
+    		ppsource.write('#MOAB -W umask=022\n')
+
+    		# Write stdout and stderr to the same file
+    		ppsource.write('#MSUB -j oe\n')
+
+    		# Job working directory
+    		ppsource.write('#MSUB -d {}\n'.format(args.homepath))
 
 # Create file of individual msub ../submit commands
 
