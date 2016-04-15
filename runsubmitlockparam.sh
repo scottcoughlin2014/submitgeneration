@@ -20,7 +20,7 @@ for event in 11 44;
                 else
                    addflags=""
                 fi;
-		./lalinference_mcmc_submit_new.py --inj /projects/b1011/spinning_runs/STT4injections.xml --event ${event} --approx SpinTaylorT4 --lowM1 3.0 --lowM2 1.0 --plot-2d --dir /projects/b1011/spinning_runs/freezingparams/${event}/${combo} ${addflags};
+		./lalinference_mcmc_submit_new.py --inj /projects/b1011/spinning_runs/STT4injections.xml --event ${event} --approx SpinTaylorT4 --lowM1 3.0 --lowM2 1.0 --plot-2d --walltime 30:00:00:00 --dir /projects/b1011/spinning_runs/freezingparams/${event}/${combo} ${addflags};
 	done;
 done;
 # --fix-distance --fix-rightascension --fix-declination --fix-costheta_jn
