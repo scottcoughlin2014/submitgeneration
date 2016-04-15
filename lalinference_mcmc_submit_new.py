@@ -642,7 +642,7 @@ with open(ppFilePath,'w') as ppfile:
         ppfile.write('\n')
 
         ppfile.write('source /projects/b1011/non-lsc/lscsoft-user-env.sh\n')
-        ppfile.write('source /projects/b1011/ligo_project/lsc/o1_lalinference_20160326/etc/lscsoftrc\n')
+        ppfile.write('source /projects/b1011/ligo_project/lsc/o1_lalinference_20160402/etc/lscsoftrc\n')
         ppfile.write('\n')
 
         ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence  --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
