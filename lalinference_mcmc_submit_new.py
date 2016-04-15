@@ -630,6 +630,26 @@ with open(submitFilePath,'w') as outfile:
     outfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
     outfile.write('\n')
 
+# Write heder to massive pp so it can be quest job
+ppsource = open('{0}/pp.sh'.format(args.homepath),"a+")
+ppsource.write('#MSUB -A {}\n'.format(args.alloc))
+ppsource.write('#MSUB -q {}\n'.format(args.queue))
+
+ppsource.write('#MSUB -l walltime={}\n'.format(args.walltime))
+ppsource.write('#MSUB -l nodes=1:ppn=1\n')
+
+ppsource.write('#MSUB -N fullPP\n')
+
+# Give read permissions to screen output
+ppsource.write('#MOAB -W umask=022\n')
+
+# Write stdout and stderr to the same file
+ppsource.write('#MSUB -j oe\n')
+
+# Job working directory
+ppsource.write('#MSUB -d {}\n'.format(args.homepath))
+ppsource.close()
+
 # Create separate pp.sh in order to manually run PP when needed
 ppFilePath = os.path.join(out_dir, 'pp.sh')
 with open(ppFilePath,'w') as ppfile:
