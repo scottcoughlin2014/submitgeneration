@@ -695,7 +695,7 @@ if args.compare:
 		ppsource.write('#MSUB -A {}\n'.format(args.alloc))
 		ppsource.write('#MSUB -q {}\n'.format(args.queue))
 
-    		ppsource.write('#MSUB -l walltime={}\n'.format(args.walltime))
+    		ppsource.write('#MSUB -l walltime=00:08:00:00\n')
     		ppsource.write('#MSUB -l nodes=1:ppn=1\n')
 	
     		ppsource.write('#MSUB -N fullPP\n')
