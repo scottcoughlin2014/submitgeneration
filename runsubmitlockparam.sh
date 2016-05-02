@@ -7,7 +7,7 @@ source /projects/b1011/ligo_project/lsc/o1_lalinference_20160402/etc/lscsoftrc
 
 rm -rf ./condor
 
-for event in 11 44;
+for event in 11 23 44 53 63 67 85 98 102 105 112 118 124 129 132 138 171 194 218 236 240 243 244 262 273 281 292 320 339 346 359 370;
 	do for combo in "none" "skyloc" "skyloc_dist" "skyloc_thetajn" "skyloc_thetajn_dist";
                 do if [ ${combo} = "skyloc" ]; then
                    addflags="--fix-rightascension --fix-declination"
@@ -20,7 +20,7 @@ for event in 11 44;
                 else
                    addflags=""
                 fi;
-		./lalinference_mcmc_submit_new.py --inj /projects/b1011/spinning_runs/STT4injections.xml --event ${event} --approx SpinTaylorT4 --lowM1 3.0 --lowM2 1.0 --plot-2d --walltime 30:00:00:00 --dir /projects/b1011/spinning_runs/freezingparams/${event}/${combo} ${addflags};
+		./lalinference_mcmc_submit_new.py --inj /projects/b1011/spinning_runs/STT4injections.xml --event ${event} --approx SpinTaylorT4 --lowM1 9.0 --lowM2 1.0 --plot-2d --walltime 30:00:00:00 --dir /projects/b1011/spinning_runs/freezingparams_20160402/${event}/${combo} ${addflags};
 	done;
 done;
 # --fix-distance --fix-rightascension --fix-declination --fix-costheta_jn
