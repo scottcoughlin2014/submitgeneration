@@ -639,23 +639,23 @@ with open(submitFilePath,'w') as outfile:
 # Create separate pp.sh in order to manually run PP when needed
 ppFilePath = os.path.join(out_dir, 'pp.sh')
 with open(ppFilePath,'w') as ppfile:
-    	ppsource = open('{0}/pp.sh'.format(args.homepath),"a+")
-    	ppsource.write('#MSUB -A {}\n'.format(args.alloc))
-    	ppsource.write('#MSUB -q {}\n'.format(args.queue))
+    	ppfile = open('{0}/pp.sh'.format(args.homepath),"a+")
+    	ppfile.write('#MSUB -A {}\n'.format(args.alloc))
+    	ppfile.write('#MSUB -q {}\n'.format(args.queue))
 
-    	ppsource.write('#MSUB -l walltime={}\n'.format(args.walltime))
-    	ppsource.write('#MSUB -l nodes=1:ppn=1\n')
+    	ppfile.write('#MSUB -l walltime={}\n'.format(args.walltime))
+    	ppfile.write('#MSUB -l nodes=1:ppn=1\n')
 
-    	ppsource.write('#MSUB -N fullPP\n')
+    	ppfile.write('#MSUB -N fullPP\n')
 
     	# Give read permissions to screen output
-    	ppsource.write('#MOAB -W umask=022\n')
+    	ppfile.write('#MOAB -W umask=022\n')
 
     	# Write stdout and stderr to the same file
-    	ppsource.write('#MSUB -j oe\n')
+    	ppfile.write('#MSUB -j oe\n')
 
     	# Job working directory
-    	ppsource.write('#MSUB -d {}\n'.format(args.homepath))
+    	ppfile.write('#MSUB -d {}\n'.format(args.homepath))
 
         ppfile.write('ulimit -c unlimited\n')
         ppfile.write('\n')
