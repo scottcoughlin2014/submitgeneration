@@ -639,7 +639,6 @@ with open(submitFilePath,'w') as outfile:
 # Create separate pp.sh in order to manually run PP when needed
 ppFilePath = os.path.join(out_dir, 'pp.sh')
 with open(ppFilePath,'w') as ppfile:
-    	ppfile = open('{0}/pp.sh'.format(args.homepath),"a+")
     	ppfile.write('#MSUB -A {}\n'.format(args.alloc))
     	ppfile.write('#MSUB -q {}\n'.format(args.queue))
 
