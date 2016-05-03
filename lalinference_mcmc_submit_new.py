@@ -642,7 +642,7 @@ with open(ppFilePath,'w') as ppfile:
     	ppfile.write('#MSUB -A {}\n'.format(args.alloc))
     	ppfile.write('#MSUB -q {}\n'.format(args.queue))
 
-    	ppfile.write('#MSUB -l walltime={}\n'.format(args.walltime))
+    	ppfile.write('#MSUB -l walltime=00:08:00:00\n')
     	ppfile.write('#MSUB -l nodes=1:ppn=1\n')
 
     	ppfile.write('#MSUB -N fullPP\n')
