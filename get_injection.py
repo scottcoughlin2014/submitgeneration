@@ -128,7 +128,7 @@ def extract_inj_vals(sim_inspiral_event):
         'phi_jl'      : phi_jl}
     return injvals
 
-def calculate_injected_sys_frame_params(sim_inspiral_event, f_ref = 100.0):
+def calculate_injected_sys_frame_params(sim_inspiral_event, f_ref = 20.0):
 
     inj = sim_inspiral_event
     # To do this we should extract the parameters of
