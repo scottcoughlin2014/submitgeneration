@@ -690,7 +690,7 @@ with open(ppFilePath,'w') as ppfile:
         ppmsub.close()
 
 if args.compare:
-    compFilePath = '/projects/b1011/spinning_runs/freezingparams_20160402/comp.sh'
+    compFilePath = '/projects/b1011/spinning_runs/freezingparams_20160402/{0}/comp.sh'.format(args.event)
     with open(compFilePath,'w') as compfile:
         compfile.write('#MSUB -A {}\n'.format(args.alloc))
         compfile.write('#MSUB -q {}\n'.format(args.queue))
