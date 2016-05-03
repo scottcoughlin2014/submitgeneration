@@ -623,7 +623,7 @@ with open(submitFilePath,'w') as outfile:
 
     outfile.write('  --distance-max {}\\\n'.format(distance_max))
     outfile.write('  --neff {}\\\n'.format(args.Neff))
-    outfile.write('  --fref {} --inj-fref {}\\\n'.format(fref))
+    outfile.write('  --fref {0} --inj-fref {0}\\\n'.format(fref))
     if fixargs is not '':
         outfile.write('{}\\\n'.format(fixargs))
     outfile.write('  {}'.format('\\\n  '.join(li_args)))
