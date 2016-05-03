@@ -690,7 +690,7 @@ with open(ppFilePath,'w') as ppfile:
         ppmsub.close()
 
 if args.compare:
-    compFilePath = os.path.join(out_dir, 'comp.sh')
+    compFilePath = '/projects/b1011/spinning_runs/freezingparams_20160402/comp.sh'
     with open(compFilePath,'w') as compfile:
         compfile.write('#MSUB -A {}\n'.format(args.alloc))
         compfile.write('#MSUB -q {}\n'.format(args.queue))
@@ -722,7 +722,7 @@ if args.compare:
         compfile.write('\n')
 
 
-        compfile.write('cbcBayesCompPos.py -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/none/post/posplots.html -n none -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/skyloc/post/posplots.html -n skyloc -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/skyloc_thetajn/post/posplots.html -n skyloc_thetajn -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/skyloc_dist/post/posplots.html -n skyloc_dist -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/skyloc_thetajn_dist/post/posplots.html -n skyloc_thetajn_dist -o ./comp -u scott.coughlin -x Balling1234 --ignore-missing-files --npixels-2d=200 --contour-dpi=200')
+        compfile.write('cbcBayesCompPos.py -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/none/post/posplots.html -n none -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/skyloc/post/posplots.html -n skyloc -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/skyloc_thetajn/post/posplots.html -n skyloc_thetajn -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/skyloc_dist/post/posplots.html -n skyloc_dist -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/skyloc_thetajn_dist/post/posplots.html -n skyloc_thetajn_dist -o ./comp -u scott.coughlin -x Balling1234 --ignore-missing-files --npixels-2d=200 --contour-dpi=200'.format(args.event))
 
         compmsub = open('{0}/compmsub.sh'.format(args.homepath),"a+")
         compmsub.write('msub {0}/comp.sh\n'.format(out_dir))
