@@ -690,25 +690,43 @@ with open(ppFilePath,'w') as ppfile:
         ppmsub.close()
 
 if args.compare:
-	if not os.path.isfile('{0}/compare.sh'.format(args.homepath)):
-		compare = open('{0}/compare.sh'.format(args.homepath))
-		ppsource.write('#MSUB -A {}\n'.format(args.alloc))
-		ppsource.write('#MSUB -q {}\n'.format(args.queue))
+    compFilePath = os.path.join(out_dir, 'comp.sh')
+    with open(compFilePath,'w') as compfile:
+        compfile.write('#MSUB -A {}\n'.format(args.alloc))
+        compfile.write('#MSUB -q {}\n'.format(args.queue))
+        compfile.write('#MSUB -l walltime=00:08:00:00\n')
+        compfile.write('#MSUB -l nodes=1:ppn=1\n')
 
-    		ppsource.write('#MSUB -l walltime=00:08:00:00\n')
-    		ppsource.write('#MSUB -l nodes=1:ppn=1\n')
-	
-    		ppsource.write('#MSUB -N fullPP\n')
+        compfile.write('#MSUB -N fullcomp\n')
 
-    		# Give read permissions to screen output
-    		ppsource.write('#MOAB -W umask=022\n')
+        # Give read permissions to screen output
+        compfile.write('#MOAB -W umask=022\n')
+        # Write stdout and stderr to the same file
+        compfile.write('#MSUB -j oe\n')
 
-    		# Write stdout and stderr to the same file
-    		ppsource.write('#MSUB -j oe\n')
+        # Job working directory
+        compfile.write('#MSUB -d {}\n'.format(args.homepath))
 
-    		# Job working directory
-    		ppsource.write('#MSUB -d {}\n'.format(args.homepath))
+        compfile.write('\n')
+        compfile.write('\n')
+        compfile.write('ulimit -c unlimited\n')
+        compfile.write('\n')
 
+        compfile.write('module load python\n')
+        compfile.write('module load mpi/openmpi-1.8.3-intel2015.0\n')
+        compfile.write('module load gcc/4.8.3\n')
+        compfile.write('\n')
+
+        compfile.write('source /projects/b1011/non-lsc/lscsoft-user-env.sh\n')
+        compfile.write('source /projects/b1011/ligo_project/lsc/o1_lalinference_20160402/etc/lscsoftrc\n')
+        compfile.write('\n')
+
+
+        compfile.write('cbcBayesCompPos.py -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/none/post/posplots.html -n none -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/skyloc/post/posplots.html -n skyloc -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/skyloc_thetajn/post/posplots.html -n skyloc_thetajn -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/skyloc_dist/post/posplots.html -n skyloc_dist -p https://ldas-jobs.ligo.caltech.edu/~leah.perri/freezingparams_20160402/{0}/skyloc_thetajn_dist/post/posplots.html -n skyloc_thetajn_dist -o ./comp -u scott.coughlin -x Balling1234 --ignore-missing-files --npixels-2d=200 --contour-dpi=200')
+
+        compmsub = open('{0}/compmsub.sh'.format(args.homepath),"a+")
+        compmsub.write('msub {0}/comp.sh\n'.format(out_dir))
+        compmsub.close()
 # Create file of individual msub ../submit commands
 
 outputLocation = ('{}/condor'.format(args.homepath))
