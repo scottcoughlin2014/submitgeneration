@@ -76,7 +76,7 @@ msub.add_argument('--email', default = 'scottcoughlin2014@u.northwestern.edu',
 msub.add_argument('--emailyes', default=False, action='store_true',
         help='Do you want email alert when job is finished?.')
 
-env.add_argument('--branch', default='o1_lalinference_20160402',
+env.add_argument('--branch', default='freezingparams_20160402',
         help='Branchname to use, assuming \
               /projects/p20251/USER/lsc/BRANCHNAME/etc/lscsoftrc \
               exists (default=master).')
@@ -226,7 +226,7 @@ if args.branch and on_quest:
     try:
         lscsoftrc = '/projects/b1011/ligo_project/lsc/{}/etc/lscsoftrc'.format(args.branch)
     except KeyError:
-        lscsoftrc = '/projects/b1011/ligo_project/lsc/o1_lalinference_20160402/etc/lscsoftrc'
+        lscsoftrc = '/projects/b1011/ligo_project/lsc/freezingparams_20160402/etc/lscsoftrc'
 
     rcs.append(lscsoftrc)
 
@@ -665,7 +665,7 @@ with open(ppFilePath,'w') as ppfile:
         ppfile.write('\n')
 
         ppfile.write('source /projects/b1011/non-lsc/lscsoft-user-env.sh\n')
-        ppfile.write('source /projects/b1011/ligo_project/lsc/o1_lalinference_20160402/etc/lscsoftrc\n')
+        ppfile.write('source /projects/b1011/ligo_project/lsc/freezingparams_20160402/etc/lscsoftrc\n')
         ppfile.write('\n')
 
 	if args.plot_2d:
@@ -718,7 +718,7 @@ if args.compare:
         compfile.write('\n')
 
         compfile.write('source /projects/b1011/non-lsc/lscsoft-user-env.sh\n')
-        compfile.write('source /projects/b1011/ligo_project/lsc/o1_lalinference_20160402/etc/lscsoftrc\n')
+        compfile.write('source /projects/b1011/ligo_project/lsc/freezingparams_20160402/etc/lscsoftrc\n')
         compfile.write('\n')
 
 
