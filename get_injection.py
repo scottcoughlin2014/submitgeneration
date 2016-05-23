@@ -77,7 +77,7 @@ def orbital_momentum_leadord(f_ref, mc, m1,m2,eta):
     """
     Lmag = np.power(mc, 5.0/3.0) / np.power(np.pi * lal.MTSUN_SI * f_ref, 1.0/3.0)
     v0 = ((m1+m2)*lal.MTSUN_SI * np.pi *f_ref)**(1./3.)
-    Lmag= Lmag*(1.0 + (v0**2) *  (2.5 -eta/6.) )
+    Lmag= Lmag*(1.0 + (v0**2) *  (3.0/2.0 -eta/6.) )
     return Lmag
 
 def ROTATEZ(angle, vx, vy, vz):
@@ -131,98 +131,81 @@ def extract_inj_vals(sim_inspiral_event):
 def calculate_injected_sys_frame_params(sim_inspiral_event, f_ref = 20.0):
 
     inj = sim_inspiral_event
-    # To do this we should extract the parameters of
-    # our binary system
-    m1  = inj.mass1
-    m2  = inj.mass2
-    m1_sun = m1*lal.MSUN_SI
-    m2_sun = m2*lal.MSUN_SI
-    mc  = inj.mchirp
-    eta = inj.eta
-    s1x = inj.spin1x
-    s1y = inj.spin1y
-    s1z = inj.spin1z
-    s2x = inj.spin2x
-    s2y = inj.spin2y
-    s2z = inj.spin2z
-    inc = inj.inclination
+
+    axis = lalsim.SimInspiralGetFrameAxisFromString(frame)
+
+    m1, m2 = inj.mass1, inj.mass2
+    mc, eta = inj.mchirp, inj.eta
+
+    # Convert to radiation frame
+    iota, s1x, s1y, s1z, s2x, s2y, s2z = \
+                lalsim.SimInspiralInitialConditionsPrecessingApproxs(inj.inclination,
+                                                                     inj.spin1x, inj.spin1y, inj.spin1z,
+                                                                     inj.spin2x, inj.spin2y, inj.spin2z,
+                                                                     m1*lal.MSUN_SI, m2 * lal.MSUN_SI, f_ref, axis)
+
+    # when we come out of SimInspiralInitialConditionsPrecessingApproxs 
+    # (which is called before precessing waveforms such as 
+    # SpinTaylorT* and IMRPv2 waveform drivers 
+    # are called in XLALChooseTDWaveform) we are in the 
+    # frame where N= (0,0,1) and L= (sin(inc),0,cos(inc))
+    # In additon L mag is defined to the 1.5PN order
+
+    a1, theta1, phi1 = cart2sph(s1x, s1y, s1z)
+    a2, theta2, phi2 = cart2sph(s2x, s2y, s2z)
+
     S1 = np.hstack((s1x, s1y, s1z))
     S2 = np.hstack((s2x, s2y, s2z))
 
-    # Get Chi/a1
-    a1, theta1,phi1 = cart2sph(s1x, s1y, s1z)
-    a2, theta2,phi2 = cart2sph(s2x, s2y, s2z)
-
-    # Spin Angles are retrieved through careful analysis of the following functions: SimInspiralTransformPrecessingNewInitialConditions
-
-    # One thing we need first is to calculate Lmag the 
-    # magnitude orbital Angular momentum which we only need 
-    # eta m1 m2 mchirp to do.
-
-    Lmag = orbital_momentum_leadord(f_ref, mc, m1,m2,eta)
-
-    # Starting frame: LNhat is along the z-axis and the unit
-    # spin vectors are defined from the angles relative to LNhat.
-    # Note that we put s1hat in the x-z plane, and phi12
-    # sets the azimuthal angle of s2hat measured from the x-axis.
-
-    LNhat = np.array([0., 0., 1.])
-    L = Lmag * LNhat
-    Nhat = np.array([np.sin(inc), 0., np.cos(inc)])
-
-    # Define S1, S2, J with proper magnitudes
     S1 *= m1**2
     S2 *= m2**2
     J = L + S1 + S2
 
-    # Let us also calculate Jhat for the plot
-    Jnorm = np.sqrt( J[0]**2 + J[1]**2 + J[2]**2)
-    Jhat = J/Jnorm
+    tilt1 = array_ang_sep(L, S1)
+    tilt2 = array_ang_sep(L, S2)
+    beta  = array_ang_sep(J, L)
 
-    # alright let's plot this shit!
-    #plot_M1M2_J_L_N(m1,m2,LNhat,Nhat,Jhat,inc)
-    
-    # Calculate some angles while in this frame before we need to rotate
-    phi1 = np.arctan2(S1[1], S1[0])
-    phi2 = np.arctan2(S2[1], S2[0])
-    phi12 = phi2 - phi1
-
-    tilt1 = angle(L, S1)
-    tilt2 = angle(L, S2)
-    theta_jn = angle(J, Nhat)
-    beta  = angle(J, L)
-
-    if (phi2 < phi1):
-          phi12 = phi2 - phi1 + 2.*np.pi
-
-    # we gotta get phi_jl
-    # Rotation 1: Rotate about z-axis by -phi0 to put Jhat in x-z plane
+    # Need to do rotations of XLALSimInspiralTransformPrecessingInitialConditioin inverse order to go in the L frame
+            # first rotation: bring J in the N-x plane, with negative x component
     phi0 = np.arctan2(J[1], J[0])
     phi0 = np.pi - phi0
-    theta0 = np.arccos(Jhat[2])
 
     J = ROTATEZ(phi0, J[0], J[1], J[2])
     L = ROTATEZ(phi0, L[0], L[1], L[2])
-    Nhat = ROTATEZ(phi0, Nhat[0], Nhat[1], Nhat[2])
+    S1 = ROTATEZ(phi0, S1[0], S1[1], S1[2])
+    S2 = ROTATEZ(phi0, S2[0], S2[1], S2[2])
 
-    # Rotation 2: Rotate about new y-axis by -theta to put Jhat along z-axis
+    # now J in in the N-x plane and form an angle theta_jn with N, rotate by -theta_jn around y to have J along z
+    theta_jn = array_polar_ang(J)
 
-    J = ROTATEY(theta0, J[0], J[1], J[2])
-    L  = ROTATEY(theta0, L[0], L[1], L[2])
-    Nhat = ROTATEY(theta0, Nhat[0], Nhat[1], Nhat[2])
+    J = ROTATEY(theta_jn, J[0], J[1], J[2])
+    L = ROTATEY(theta_jn, L[0], L[1], L[2])
+    S1 = ROTATEY(theta_jn, S1[0], S1[1], S1[2])
+    S2 = ROTATEY(theta_jn, S2[0], S2[1], S2[2])
 
-    # Rotation 6: Now L is along z and we have to bring N in the x-z plane.
-    phiN = np.arctan2(Nhat[1], Nhat[0])
-    phiN = np.pi - phiN
-    J = ROTATEZ(phiN, J[0], J[1], J[2])
-    L = ROTATEZ(phiN, L[0], L[1], L[2])
-    Nhat = ROTATEZ(phiN, Nhat[0], Nhat[1], Nhat[2])
-
-    # Now calc phi_jl
+    # J should now be || z and L should have a azimuthal angle phi_jl
     phi_jl = np.arctan2(L[1], L[0])
-    if (phi_jl < 0):
+    phi_jl = np.pi - phi_jl
 
-         phi_jl = phi_jl + 2.0*np.pi
+    # bring L in the Z-X plane, with negative x
+    J = ROTATEZ(phi_jl, J[0], J[1], J[2])
+    L = ROTATEZ(phi_jl, L[0], L[1], L[2])
+    S1 = ROTATEZ(phi_jl, S1[0], S1[1], S1[2])
+    S2 = ROTATEZ(phi_jl, S2[0], S2[1], S2[2])
+
+    theta0 = array_polar_ang(L)
+    J = ROTATEY(theta0, J[0], J[1], J[2])
+    L = ROTATEY(theta0, L[0], L[1], L[2])
+    S1 = ROTATEY(theta0, S1[0], S1[1], S1[2])
+    S2 = ROTATEY(theta0, S2[0], S2[1], S2[2])
+
+    # The last rotation is useless as it won't change the differenze in spins' azimuthal angles
+    phi1 = np.arctan2(S1[1], S1[0])
+    phi2 = np.arctan2(S2[1], S2[0])
+    if phi2 < phi1:
+        phi12 = phi2 - phi1 + 2.*np.pi
+    else:
+        phi12 = phi2 - phi1
 
     return a1, a2, s1z, s2z, theta_jn, phi_jl, tilt1, tilt2, phi12
 
