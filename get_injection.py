@@ -68,16 +68,26 @@ def array_polar_ang(vec):
 
 #}}}
 
-def orbital_momentum_leadord(f_ref, mc, m1,m2,eta):
+def orbital_momentum(fref, m1,m2,eta, inclination):
     """
-    in computation of the Lmag (magnitude of orbital ang. momentum), 
-    the function SimInspiralTransformPrecessingNewInitialConditions uses 
-    expression up to next-to-leading order, whereas 
-    _inj_spins uses newtonian expression
+    Calculate orbital angular momentum vector.
+    Note: The units of Lmag are different than what used in lalsimulation.
+    Mc must be called in units of Msun here.
+
+    Note that if one wants to build J=L+S1+S2 with L returned by this function, S1 and S2
+    must not get the Msun^2 factor.
     """
-    Lmag = np.power(mc, 5.0/3.0) / np.power(np.pi * lal.MTSUN_SI * f_ref, 1.0/3.0)
-    v0 = ((m1+m2)*lal.MTSUN_SI * np.pi *f_ref)**(1./3.)
-    Lmag= Lmag*(1.0 + (v0**2) *  (3.0/2.0 -eta/6.) )
+    Lmag = orbital_momentum_mag(fref, m1,m2,eta)
+    Lx, Ly, Lz = sph2cart(Lmag, inclination, 0.0)
+    return np.hstack((Lx,Ly,Lz))
+#
+#
+def orbital_momentum_mag(fref, m1,m2,eta)):
+    v0 = np.power(pi_constant * lal.MTSUN_SI * fref, 1.0/3.0)
+    #1 PN Mtot*Mtot*eta/v 
+    1PN = (((m1+m2)**2)*eta)/v0
+    2PN = 1+ (v0**2) * (3.0/2.0 -eta/6.0)
+    Lmag= 1PN*2PN
     return Lmag
 
 def ROTATEZ(angle, vx, vy, vz):
@@ -154,6 +164,7 @@ def calculate_injected_sys_frame_params(sim_inspiral_event, f_ref = 20.0):
     a1, theta1, phi1 = cart2sph(s1x, s1y, s1z)
     a2, theta2, phi2 = cart2sph(s2x, s2y, s2z)
 
+    L  = orbital_momentum(f_ref, m1,m2,eta,iota)
     S1 = np.hstack((s1x, s1y, s1z))
     S2 = np.hstack((s2x, s2y, s2z))
 
