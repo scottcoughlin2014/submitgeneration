@@ -82,7 +82,7 @@ def orbital_momentum(fref, m1,m2,eta, inclination):
     return np.hstack((Lx,Ly,Lz))
 #
 #
-def orbital_momentum_mag(fref, m1,m2,eta)):
+def orbital_momentum_mag(fref, m1,m2,eta):
     v0 = np.power(pi_constant * lal.MTSUN_SI * fref, 1.0/3.0)
     #1 PN Mtot*Mtot*eta/v 
     1PN = (((m1+m2)**2)*eta)/v0
