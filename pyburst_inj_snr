@@ -8,8 +8,6 @@ from optparse import OptionParser
 import itertools
 import hashlib
 
-import lal
-
 import numpy
 import scipy.optimize
 
@@ -22,8 +20,10 @@ from glue.ligolw.utils import process
 from pylal import antenna
 #from pylal import coherent_inspiral_metric as metric
 #from pylal import coherent_inspiral_metric_detector_details as details
-from pylal.series import read_psd_xmldoc, LIGOLWContentHandler
+#from pylal.series import read_psd_xmldoc, LIGOLWContentHandler
+from lal.series import read_psd_xmldoc, PSDContentHandler
 
+import lal
 import lalburst
 import lalsimulation
 import lalmetaio
@@ -126,7 +126,7 @@ def parse_psd_file( filestr ):
     Map the user-provided PSD file string into a function to be called as PSD(f).
     """
     try:
-        xmldoc = utils.load_filename(filestr, contenthandler=LIGOLWContentHandler)
+        xmldoc = utils.load_filename(filestr, contenthandler=PSDContentHandler)
         psd = read_psd_xmldoc(xmldoc).values()[0]
         f = numpy.arange(0, len(psd.data)*psd.deltaF, psd.deltaF)
         psd = psd.data
@@ -598,7 +598,7 @@ for row in sims:
     if opts.machine_parse and not opts.no_print_network:
         print "%f" % net_snr
     elif not opts.no_print_network:
-        print "Network SNR:%f" % (net_snr)
+        print "Network SNR for %s at %10.3f is %f" % (row.waveform, time, net_snr)
 
     if not opts.skip_coherent_snr:
 
@@ -723,6 +723,7 @@ except ValueError:
 try:
     sim_insp = table.get_table(xmldoc, lsctables.SimInspiralTable.tableName)
     si_ids = map(lambda sb: sb[1], filter(lambda cut: cut[0] == lalmetaio.SimInspiralTable, cut_sims))
+    print "%d inspiral injections would be cut from SNR thresholds." % len(si_ids)
     n = len(sim_insp)-1
     for i, si in enumerate(sim_insp[::-1]):
         if si.simulation_id in si_ids:

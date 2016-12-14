@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import lalsimulation as lalsim
+import pdb
 
 import os
 import glob
@@ -241,21 +242,29 @@ unload_modules = []
 # Determine which simulated PSD to use.
 noise_psd_caches = {}
 psd_files=None
+pyburst_snr_psd_caches = {}
 print "Using {}-era PSDs.".format(args.era)
 if args.era == 'initial':
     for _ifos, _cache in (
-          (('H1', 'H2', 'L1', 'I1'), 'LALLIGO'),
+          (('K1','H1', 'H2', 'L1', 'I1'), 'LALLIGO'),
           (('V1',), 'LALVirgo')):
             for _ifo in _ifos:
                 noise_psd_caches[_ifo] = _cache
 
 elif args.era == 'advanced':
     for _ifos, _cache in (
-          (('H1', 'H2', 'L1', 'I1'), 'LALSimAdLIGO'),
+          (('K1','H1', 'H2', 'L1', 'I1'), 'LALSimAdLIGO'),
           (('V1',), 'LALSimAdVirgo')):
             for _ifo in _ifos:
                 noise_psd_caches[_ifo] = _cache
-
+    for _ifos, _cache in (
+          (('K1',),'--det-psd-func=K1=SimNoisePSDaLIGOZeroDetHighPower'),
+          (('H1',),'--det-psd-func=H1=SimNoisePSDaLIGOZeroDetHighPower'), 
+          (('L1',),'--det-psd-func=L1=SimNoisePSDaLIGOZeroDetHighPower'),
+          (('I1',),'--det-psd-func=I1=SimNoisePSDaLIGOZeroDetHighPower'),
+          (('V1',), '--det-psd-func=V1=SimNoisePSDAdvVirgo')):
+            for _ifo in _ifos:
+                pyburst_snr_psd_caches[_ifo] = _cache
 
 # Check if caches specified in extra arguments
 caches_specified = check_for_arg_substring('cache', li_args)
@@ -390,6 +399,8 @@ elif args.inj and args.event is not None:
 		f_isco = ISCO(event.mass1, event.mass2)
 		fhigh = args.fhigh * f_isco
 
+#what ifos are we using?
+ifos = args.ifo
 # Calculate any arguments not specified
 if calcSNR:
     commandline = "lalapps_chirplen --flow {0} --m1 {1} --m2 {2}".format(flow,args.lowM1,args.lowM2) 
@@ -406,14 +417,19 @@ if calcSNR:
     print('Sampling Rate based on FHigh = {}'.format(srate))
     print('Duration of Waveform = {}'.format(dur))
     print('Segment Length of waveform based on Duration = {}'.format(seglen))
+    pyburst_cache_args = \
+        ['{} '.format(pyburst_snr_psd_caches[ifo]) for ifo in ifos]
 
-    commandline = './pyburst_inj_snr {} --det-psd-func=H1=SimNoisePSDaLIGOZeroDetHighPower --det-psd-func=L1=SimNoisePSDaLIGOZeroDetHighPower --det-psd-func=V1=SimNoisePSDAdvVirgo  --low-frequency-cutoff={} --nyquist-frequency={} --waveform-length={}  --sim-id {} --skip-coherent-snr --no-print-single-ifo'.format(args.inj,flow,power_log(fhighend),seglen,simid)
+    commandline = './pyburst_inj_snr {} {} --low-frequency-cutoff={} --nyquist-frequency={} --waveform-length={}  --sim-id {} --skip-coherent-snr --no-print-single-ifo'.format(args.inj,''.join(pyburst_cache_args),flow,power_log(fhighend),seglen,simid)
     print('Command to find Network SNR so we can set temperature ladders: ' +commandline)
     
     proc = subprocess.Popen(shlex.split(commandline), stdout=subprocess.PIPE)
     output = proc.stdout.read()
     print(output)
-    SNR = float(output.split(':')[1])
+    try:
+        SNR = float(output.split(':')[1])
+    except:
+        SNR = float(output.split(' is ')[1].split('\n')[0])
 
 if args.trigSNR:
     SNR = args.trigSNR
@@ -497,7 +513,6 @@ if not args.no_malmquist:
     li_args.append('--malmquistprior')
 
 # Prepare lalinference_mcmc arguments
-ifos = args.ifo
 ifo_args = ['--ifo {}'.format(ifo) for ifo in ifos]
 flow_args = ['--{}-flow {:g}'.format(ifo, flow) for ifo in ifos]
 
