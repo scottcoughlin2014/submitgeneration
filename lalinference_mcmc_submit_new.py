@@ -77,7 +77,7 @@ msub.add_argument('--email', default = 'scottcoughlin2014@u.northwestern.edu',
 msub.add_argument('--emailyes', default=False, action='store_true',
         help='Do you want email alert when job is finished?.')
 
-env.add_argument('--branch', default='freezingparams_20160402',
+env.add_argument('--branch', default='kagra_o2_lalinference',
         help='Branchname to use, assuming \
               /projects/p20251/USER/lsc/BRANCHNAME/etc/lscsoftrc \
               exists (default=master).')
@@ -227,7 +227,7 @@ if args.branch and on_quest:
     try:
         lscsoftrc = '/projects/b1011/ligo_project/lsc/{}/etc/lscsoftrc'.format(args.branch)
     except KeyError:
-        lscsoftrc = '/projects/b1011/ligo_project/lsc/freezingparams_20160402/etc/lscsoftrc'
+        lscsoftrc = '/projects/b1011/ligo_project/lsc/kagra_o2_lalinference/etc/lscsoftrc'
 
     rcs.append(lscsoftrc)
 
@@ -680,7 +680,7 @@ with open(ppFilePath,'w') as ppfile:
         ppfile.write('\n')
 
         ppfile.write('source /projects/b1011/non-lsc/lscsoft-user-env.sh\n')
-        ppfile.write('source /projects/b1011/ligo_project/lsc/freezingparams_20160402/etc/lscsoftrc\n')
+        ppfile.write('source /projects/b1011/ligo_project/lsc/kagra_o2_lalinference/etc/lscsoftrc\n')
         ppfile.write('\n')
 
 	if args.plot_2d:
@@ -705,7 +705,7 @@ with open(ppFilePath,'w') as ppfile:
         ppmsub.close()
 
 if args.compare:
-    compFilePath = '/projects/b1011/spinning_runs/freezingparams_20160402/{0}/comp.sh'.format(args.event)
+    compFilePath = '/projects/b1011/spinning_runs/kagra_o2_lalinference/{0}/comp.sh'.format(args.event)
     with open(compFilePath,'w') as compfile:
         compfile.write('#MSUB -A {}\n'.format(args.alloc))
         compfile.write('#MSUB -q {}\n'.format(args.queue))
@@ -733,7 +733,7 @@ if args.compare:
         compfile.write('\n')
 
         compfile.write('source /projects/b1011/non-lsc/lscsoft-user-env.sh\n')
-        compfile.write('source /projects/b1011/ligo_project/lsc/freezingparams_20160402/etc/lscsoftrc\n')
+        compfile.write('source /projects/b1011/ligo_project/lsc/kagra_o2_lalinference/etc/lscsoftrc\n')
         compfile.write('\n')
 
 
