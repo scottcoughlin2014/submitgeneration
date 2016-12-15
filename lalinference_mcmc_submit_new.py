@@ -644,11 +644,10 @@ with open(submitFilePath,'w') as outfile:
     outfile.write('  {}'.format('\\\n  '.join(li_args)))
     outfile.write('\n')
     outfile.write('\n')
-    outfile.write('module load gcc/4.8.3\n')
     outfile.write('\n')
     # Post-processing command line
 
-    outfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+    outfile.write('cbcBayesPostProc.py  -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00  --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
     outfile.write('\n')
 
 # Create separate pp.sh in order to manually run PP when needed
@@ -684,12 +683,12 @@ with open(ppFilePath,'w') as ppfile:
         ppfile.write('\n')
 
 	if args.plot_2d:
-	        ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence  --skyres=.5 --deltaLogL {} --plot-2d\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+	        ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00  --skyres=.5 --deltaLogP {} --plot-2d\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
 	else:
-		ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00 --dievidence  --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+		ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00  --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
 	if args.ppall:
 		for i in xrange(1,n_chains):
-			ppfile.write('cbcBayesPostProc.py --lalinfmcmc -i {} --event {} --outpath={}{} -d {}/PTMCMC.output.*.0{} --dievidence  --skyres=.5 --deltaLogL {}\n'.format(args.inj,args.event,webdir,i,out_dir,i,target_hot_like))
+			ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={}{} -d {}/PTMCMC.output.*.0{} --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,i,out_dir,i,target_hot_like))
 	else:
 		ppfile.close()
 
