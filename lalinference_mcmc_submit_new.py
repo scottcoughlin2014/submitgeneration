@@ -645,9 +645,11 @@ with open(submitFilePath,'w') as outfile:
     outfile.write('\n')
     outfile.write('\n')
     outfile.write('\n')
+    outfile.write('PTMCMCPATH=$(ls {}/PTMCMC.output* |tail -2 |head -1)'.format(out_dir))
+    outfile.write('\n')
     # Post-processing command line
 
-    outfile.write('cbcBayesPostProc.py  -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00  --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+    outfile.write('cbcBayesPostProc.py  -i {} --event {} --outpath={} -d ${PTMCMCPATH}  --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,target_hot_like))
     outfile.write('\n')
 
 # Create separate pp.sh in order to manually run PP when needed
@@ -681,14 +683,16 @@ with open(ppFilePath,'w') as ppfile:
         ppfile.write('source /projects/b1011/non-lsc/lscsoft-user-env.sh\n')
         ppfile.write('source /projects/b1011/ligo_project/lsc/kagra_o2_lalinference/etc/lscsoftrc\n')
         ppfile.write('\n')
+        ppfile.write('PTMCMCPATH=$(ls {}/PTMCMC.output* |tail -2 |head -1)'.format(out_dir))
+        ppfile.write('\n')
 
 	if args.plot_2d:
-	        ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00  --skyres=.5 --deltaLogP {} --plot-2d\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+	        ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d ${PTMCMCPATH}  --skyres=.5 --deltaLogP {} --plot-2d\n'.format(args.inj,args.event,webdir,target_hot_like))
 	else:
-		ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d {}/PTMCMC.output.*.00  --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,out_dir,target_hot_like))
+		ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d ${PTMCMCPATH} --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,target_hot_like))
 	if args.ppall:
 		for i in xrange(1,n_chains):
-			ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={}{} -d {}/PTMCMC.output.*.0{} --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,i,out_dir,i,target_hot_like))
+			ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={}{} -d {}/PTMCMC.output.*.0{} --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,i,i,target_hot_like))
 	else:
 		ppfile.close()
 
