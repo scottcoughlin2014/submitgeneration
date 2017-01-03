@@ -649,7 +649,7 @@ with open(submitFilePath,'w') as outfile:
     outfile.write('\n')
     # Post-processing command line
 
-    outfile.write('cbcBayesPostProc.py  -i {} --event {} --outpath={} -d ${PTMCMCPATH}  --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,target_hot_like))
+    outfile.write('cbcBayesPostProc.py  -i {} --event {} --outpath={} -d {}  --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,'${PTMCMCPATH}',target_hot_like))
     outfile.write('\n')
 
 # Create separate pp.sh in order to manually run PP when needed
@@ -687,9 +687,9 @@ with open(ppFilePath,'w') as ppfile:
         ppfile.write('\n')
 
 	if args.plot_2d:
-	        ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d ${PTMCMCPATH}  --skyres=.5 --deltaLogP {} --plot-2d\n'.format(args.inj,args.event,webdir,target_hot_like))
+	        ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d {}  --skyres=.5 --deltaLogP {} --plot-2d\n'.format(args.inj,args.event,webdir,'${PTMCMCPATH}',target_hot_like))
 	else:
-		ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d ${PTMCMCPATH} --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,target_hot_like))
+		ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d {} --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,'${PTMCMCPATH}'target_hot_like))
 	if args.ppall:
 		for i in xrange(1,n_chains):
 			ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={}{} -d {}/PTMCMC.output.*.0{} --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,i,i,target_hot_like))
