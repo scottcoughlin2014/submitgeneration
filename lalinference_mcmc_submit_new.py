@@ -689,7 +689,7 @@ with open(ppFilePath,'w') as ppfile:
 	if args.plot_2d:
 	        ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d {}  --skyres=.5 --deltaLogP {} --plot-2d\n'.format(args.inj,args.event,webdir,'${PTMCMCPATH}',target_hot_like))
 	else:
-		ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d {} --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,'${PTMCMCPATH}'target_hot_like))
+		ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={} -d {} --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,'${PTMCMCPATH}',target_hot_like))
 	if args.ppall:
 		for i in xrange(1,n_chains):
 			ppfile.write('cbcBayesPostProc.py -i {} --event {} --outpath={}{} -d {}/PTMCMC.output.*.0{} --skyres=.5 --deltaLogP {}\n'.format(args.inj,args.event,webdir,i,i,target_hot_like))
