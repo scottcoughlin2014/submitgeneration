@@ -563,7 +563,7 @@ with open(submitFilePath,'w') as outfile:
 
         outfile.write('#MSUB -l walltime={}\n'.format(args.walltime))
         outfile.write('#MSUB -l nodes={}:ppn={}\n'.format(n_nodes,n_cores))
-        outfile.write('#MSUB -l partition=quest6')
+        outfile.write('#MSUB -l partition=quest6\n')
 
         if args.dep:
             outfile.write('#MSUB -l {}\n'.format(args.dep))
